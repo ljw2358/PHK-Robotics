@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>PHK Robotics</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111a2e; --muted:#95a3c7; --text:#eaf0ff;
+      --accent:#7aa7ff; --accent2:#6ee7ff; --line:rgba(255,255,255,.10);
+      --ok:#8bffb0;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(1200px 800px at 20% 10%, rgba(122,167,255,.18), transparent 55%),
+                               radial-gradient(900px 700px at 85% 20%, rgba(110,231,255,.12), transparent 55%),
+                               linear-gradient(180deg, #070b14 0%, var(--bg) 40%, #070b14 100%);
+              color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Pretendard,Apple SD Gothic Neo,Noto Sans KR,Arial,sans-serif;}
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1100px; margin:0 auto; padding:18px 16px 48px}
+    .topbar{display:flex; gap:10px; align-items:center; justify-content:space-between; position:sticky; top:0; padding:10px 0; backdrop-filter: blur(10px);}
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{
+      width:38px;height:38px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(122,167,255,.95), rgba(110,231,255,.75));
+      box-shadow:0 12px 30px rgba(122,167,255,.22);
+      display:grid; place-items:center; color:#061022; font-weight:900;
+    }
+    .brand h1{margin:0; font-size:16px; letter-spacing:.4px}
+    .brand .sub{margin:2px 0 0; font-size:12px; color:var(--muted)}
+    .controls{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .pill{border:1px solid var(--line); background:rgba(17,26,46,.55); color:var(--text);
+          padding:8px 10px; border-radius:999px; font-size:12px; cursor:pointer}
+    .pill:hover{border-color:rgba(122,167,255,.35)}
+    .pill.active{border-color:rgba(110,231,255,.55); box-shadow:0 0 0 3px rgba(110,231,255,.12) inset}
+    .hero{margin-top:18px; padding:22px; border:1px solid var(--line); border-radius:18px;
+          background:linear-gradient(180deg, rgba(17,26,46,.70), rgba(17,26,46,.40));
+          box-shadow:0 18px 60px rgba(0,0,0,.35)}
+    .kicker{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border:1px solid var(--line);
+            border-radius:999px; color:var(--muted); font-size:12px; background:rgba(7,11,20,.35)}
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--ok); box-shadow:0 0 0 4px rgba(139,255,176,.12)}
+    .title{margin:14px 0 8px; font-size:28px; line-height:1.2; letter-spacing:-.2px}
+    .desc{margin:0; color:var(--muted); font-size:14px; line-height:1.65}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:12px; margin-top:16px}
+    .card{grid-column:span 12; padding:16px; border:1px solid var(--line); border-radius:16px;
+          background:rgba(17,26,46,.42)}
+    .card h3{margin:0 0 8px; font-size:15px}
+    .card p{margin:0; color:var(--muted); font-size:13px; line-height:1.65}
+    @media(min-width:860px){
+      .c4{grid-column:span 4}
+      .c6{grid-column:span 6}
+      .c8{grid-column:span 8}
+    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .btn{
+      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(7,11,20,.35); cursor:pointer; font-weight:700; font-size:13px;
+      display:inline-flex; gap:10px; align-items:center;
+    }
+    .btn.primary{
+      border-color:rgba(122,167,255,.55);
+      background:linear-gradient(135deg, rgba(122,167,255,.25), rgba(110,231,255,.18));
+      box-shadow:0 14px 30px rgba(122,167,255,.12);
+    }
+    .btn:hover{border-color:rgba(110,231,255,.45)}
+    .sectionTitle{margin:18px 0 10px; font-size:14px; color:var(--text); letter-spacing:.2px}
+    .list{display:grid; gap:10px}
+    .item{padding:14px; border:1px solid var(--line); border-radius:14px; background:rgba(17,26,46,.35)}
+    .item b{display:block; margin-bottom:6px; font-size:13px}
+    .item span{display:block; color:var(--muted); font-size:13px; line-height:1.6}
+    .footer{margin-top:18px; padding:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.6}
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(17,26,46,.92); color:var(--text); font-size:12px;
+      opacity:0; pointer-events:none; transition:opacity .18s ease;
+      max-width:92vw;
+    }
+    .toast.show{opacity:1}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">PHK</div>
+        <div>
+          <h1 id="brandTitle">PHK Robotics</h1>
+          <div class="sub" id="brandSub">로보틱스 단독 법인/사업자용 공식 앱</div>
+        </div>
+      </div>
+      <div class="controls" aria-label="language controls">
+        <button class="pill" id="langAuto" type="button">AUTO</button>
+        <button class="pill" id="langKo" type="button">KO</button>
+        <button class="pill" id="langEn" type="button">EN</button>
+        <button class="pill" id="langAr" type="button">AR</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="kicker"><span class="dot"></span><span id="kickerText">사업자 등록용: 로보틱스 단독 프레임</span></div>
+      <h2 class="title" id="heroTitle">“로봇을 시제품이 아니라 산업의 인프라로 만든다.”</h2>
+      <p class="desc" id="heroDesc">
+        PHK Robotics는 산업·물류·의료·방산·특수·휴머노이드까지 전 영역 로봇을 설계·제조·확장하는 로보틱스 전문 조직입니다.
+        본 앱은 로보틱스 단독 사업자(법인/개인) 운영을 위한 공식 소개 페이지입니다.
+      </p>
+
+      <div class="btnrow">
+        <button class="btn primary" id="btnContact" type="button">📩 <span id="btnContactTxt">연락/초빙 문의</span></button>
+        <button class="btn" id="btnVision" type="button">🧭 <span id="btnVisionTxt">핵심 비전 보기</span></button>
+        <button class="btn" id="btnRoadmap" type="button">🗺️ <span id="btnRoadmapTxt">로드맵 보기</span></button>
+      </div>
+
+      <div class="grid">
+        <div class="card c6">
+          <h3 id="card1Title">핵심 제품군</h3>
+          <p id="card1Desc">
+            산업용 로봇 · 물류/AMR · 의료/재활 · 방산/보안 · 특수목적(재난/플랜트) · 휴머노이드 플랫폼
+          </p>
+        </div>
+        <div class="card c6">
+          <h3 id="card2Title">핵심 실행 원칙</h3>
+          <p id="card2Desc">
+            (1) 현장 우선 (2) 제조/양산 우선 (3) 안전/규격 우선 (4) 핵심 인력 1명씩 ‘정예 초빙’ (5) 장기 대형 계약 중심
+          </p>
+        </div>
+        <div class="card c4">
+          <h3 id="card3Title">모집(초빙)</h3>
+          <p id="card3Desc">
+            로보틱스 총괄 1명 / AI·자율주행 1명 / 기구·전장·제어 각 1명(필요 시)
+          </p>
+        </div>
+        <div class="card c4">
+          <h3 id="card4Title">사업자 목적</h3>
+          <p id="card4Desc">
+            로보틱스 단독 사업자 등록 → 핵심 인력 확보 → 시제품/파일럿 → 국가·대기업 계약 → 제조 확장
+          </p>
+        </div>
+        <div class="card c4">
+          <h3 id="card5Title">운영 방식</h3>
+          <p id="card5Desc">
+            초기: 소수 정예 / 중기: 라인 구축 / 장기: 다품종·대량 생산 체계로 확장
+          </p>
+        </div>
+      </div>
+
+      <div class="sectionTitle" id="sec1Title">핵심 실행 항목</div>
+      <div class="list" id="execList">
+        <div class="item">
+          <b id="it1t">① 빠른 제품화</b>
+          <span id="it1d">바퀴형 이동 플랫폼(AMR) → 팔/그리퍼 → 작업 모듈 순으로 단계 확장</span>
+        </div>
+        <div class="item">
+          <b id="it2t">② 제조 우선 설계</b>
+          <span id="it2d">양산 관점의 부품 표준화, 서비스/유지보수 구조를 처음부터 내장</span>
+        </div>
+        <div class="item">
+          <b id="it3t">③ 계약 중심 성장</b>
+          <span id="it3d">국가·대기업과 파일럿 계약 → 성능검증 → 장기 공급계약으로 확대</span>
+        </div>
+      </div>
+
+      <div class="sectionTitle" id="sec2Title">연락 정보</div>
+      <div class="card">
+        <p class="desc" id="contactDesc">
+          아래 버튼을 누르면 문의 문구가 복사됩니다. 링크드인 DM에 그대로 붙여넣어 주세요.
+        </p>
+        <div class="btnrow">
+          <button class="btn primary" id="btnCopyDM" type="button">📋 <span id="btnCopyDMTxt">DM 초빙 문구 복사</span></button>
+          <button class="btn" id="btnCopyBiz" type="button">📄 <span id="btnCopyBizTxt">사업자 소개 요약 복사</span></button>
+        </div>
+        <p class="desc mono" id="miniNote" style="margin-top:10px; opacity:.9">
+          * 연락처/이메일은 혜공님이 원하시는 것으로 나중에 여기만 교체하시면 됩니다.
+        </p>
+      </div>
+
+      <div class="footer" id="footerText">
+        © PHK Robotics. All rights reserved. <span class="mono">v1.0</span> · 사업자 등록용 단독 앱 프레임
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+<script>
+  // ---------- i18n ----------
+  const TEXT = {
+    ko: {
+      dir: "ltr",
+      brandSub: "로보틱스 단독 법인/사업자용 공식 앱",
+      kicker: "사업자 등록용: 로보틱스 단독 프레임",
+      heroTitle: "“로봇을 시제품이 아니라 산업의 인프라로 만든다.”",
+      heroDesc: "PHK Robotics는 산업·물류·의료·방산·특수·휴머노이드까지 전 영역 로봇을 설계·제조·확장하는 로보틱스 전문 조직입니다. 본 앱은 로보틱스 단독 사업자(법인/개인) 운영을 위한 공식 소개 페이지입니다.",
+      btnContact: "연락/초빙 문의",
+      btnVision: "핵심 비전 보기",
+      btnRoadmap: "로드맵 보기",
+      c1t: "핵심 제품군",
+      c1d: "산업용 로봇 · 물류/AMR · 의료/재활 · 방산/보안 · 특수목적(재난/플랜트) · 휴머노이드 플랫폼",
+      c2t: "핵심 실행 원칙",
+      c2d: "(1) 현장 우선 (2) 제조/양산 우선 (3) 안전/규격 우선 (4) 핵심 인력 1명씩 ‘정예 초빙’ (5) 장기 대형 계약 중심",
+      c3t: "모집(초빙)",
+      c3d: "로보틱스 총괄 1명 / AI·자율주행 1명 / 기구·전장·제어 각 1명(필요 시)",
+      c4t: "사업자 목적",
+      c4d: "로보틱스 단독 사업자 등록 → 핵심 인력 확보 → 시제품/파일럿 → 국가·대기업 계약 → 제조 확장",
+      c5t: "운영 방식",
+      c5d: "초기: 소수 정예 / 중기: 라인 구축 / 장기: 다품종·대량 생산 체계로 확장",
+      sec1: "핵심 실행 항목",
+      it1t: "① 빠른 제품화",
+      it1d: "바퀴형 이동 플랫폼(AMR) → 팔/그리퍼 → 작업 모듈 순으로 단계 확장",
+      it2t: "② 제조 우선 설계",
+      it2d: "양산 관점의 부품 표준화, 서비스/유지보수 구조를 처음부터 내장",
+      it3t: "③ 계약 중심 성장",
+      it3d: "국가·대기업과 파일럿 계약 → 성능검증 → 장기 공급계약으로 확대",
+      sec2: "연락 정보",
+      contactDesc: "아래 버튼을 누르면 문의 문구가 복사됩니다. 링크드인 DM에 그대로 붙여넣어 주세요.",
+      copyDM: "DM 초빙 문구 복사",
+      copyBiz: "사업자 소개 요약 복사",
+      footer: "© PHK Robotics. All rights reserved. v1.0 · 사업자 등록용 단독 앱 프레임",
+      toastCopied: "복사 완료!",
+      toastJumpVision: "비전 섹션으로 이동했습니다.",
+      toastJumpRoadmap: "로드맵(요약)을 보여드립니다."
+    },
+    en: {
+      dir: "ltr",
+      brandSub: "Official single-app frame for Robotics business registration",
+      kicker: "Business registration: Robotics-only frame",
+      heroTitle: "“Robots are industrial infrastructure, not demos.”",
+      heroDesc: "PHK Robotics designs, manufactures, and scales robotics across industrial, logistics, medical, defense, special-purpose, and humanoid domains. This app is a formal Robotics-only introduction frame for business operations.",
+      btnContact: "Contact / Invitation",
+      btnVision: "View Core Vision",
+      btnRoadmap: "View Roadmap",
+      c1t: "Core Product Lines",
+      c1d: "Industrial robots · Logistics/AMR · Medical/rehab · Defense/security · Special-purpose (disaster/plant) · Humanoid platforms",
+      c2t: "Execution Principles",
+      c2d: "(1) Field-first (2) Manufacturing-first (3) Safety/standards-first (4) One elite leader per domain (5) Long-term large contracts",
+      c3t: "Inviting",
+      c3d: "1 Robotics lead / 1 AI & autonomy lead / Mech·EE·Control leads as needed",
+      c4t: "Business Purpose",
+      c4d: "Register robotics-only business → secure core leaders → prototype/pilot → public & enterprise contracts → manufacturing scale-up",
+      c5t: "Operating Model",
+      c5d: "Early: small elite team / Mid: production lines / Long: multi-product mass manufacturing",
+      sec1: "Key Execution Items",
+      it1t: "1) Fast Productization",
+      it1d: "Mobile base (AMR) → arm/gripper → task modules",
+      it2t: "2) Manufacturing-first Design",
+      it2d: "Standardize parts for mass production; service/maintenance built-in from day one",
+      it3t: "3) Contract-driven Growth",
+      it3d: "Pilot → validation → long-term supply contracts",
+      sec2: "Contact",
+      contactDesc: "Tap the buttons to copy inquiry text. Paste it into LinkedIn DM.",
+      copyDM: "Copy DM Invitation Text",
+      copyBiz: "Copy Business Summary",
+      footer: "© PHK Robotics. All rights reserved. v1.0 · Robotics-only business frame",
+      toastCopied: "Copied!",
+      toastJumpVision: "Moved to the vision section.",
+      toastJumpRoadmap: "Showing a short roadmap summary."
+    },
+    ar: {
+      dir: "rtl",
+      brandSub: "إطار رسمي لتطبيق واحد لتسجيل نشاط الروبوتات",
+      kicker: "تسجيل نشاط: إطار روبوتات فقط",
+      heroTitle: "«الروبوتات بنية تحتية صناعية وليست عروضاً.»",
+      heroDesc: "PHK Robotics تصمم وتُصنّع وتوسّع حلول الروبوتات في المجالات الصناعية واللوجستية والطبية والدفاعية والمهام الخاصة والهيومنُويد. هذا التطبيق إطارٌ رسمي للتعريف بنشاط روبوتات فقط لأغراض التشغيل وتسجيل النشاط.",
+      btnContact: "تواصل / دعوة",
+      btnVision: "عرض الرؤية",
+      btnRoadmap: "عرض خارطة الطريق",
+      c1t: "خطوط المنتجات الأساسية",
+      c1d: "روبوتات صناعية · لوجستيات/AMR · طبي/تأهيل · دفاع/أمن · مهام خاصة · منصات هيومنُويد",
+      c2t: "مبادئ التنفيذ",
+      c2d: "(1) الميدان أولاً (2) التصنيع أولاً (3) السلامة والمعايير أولاً (4) قائد نخبة واحد لكل مجال (5) عقود طويلة وكبيرة",
+      c3t: "نبحث عن",
+      c3d: "قائد روبوتات 1 / قائد ذكاء اصطناعي واستقلالية 1 / قادة ميكانيك وكهرباء وتحكم عند الحاجة",
+      c4t: "هدف النشاط",
+      c4d: "تسجيل نشاط روبوتات فقط → استقطاب القادة → نموذج أولي/تجربة → عقود حكومية وشركات → توسع التصنيع",
+      c5t: "نموذج التشغيل",
+      c5d: "بداية: فريق نخبة صغير / وسط: خطوط إنتاج / طويل: تصنيع متعدد المنتجات وعلى نطاق واسع",
+      sec1: "بنود التنفيذ الرئيسية",
+      it1t: "1) تسريع تحويل المنتج",
+      it1d: "قاعدة متحركة (AMR) → ذراع/قابض → وحدات مهام",
+      it2t: "2) تصميم موجّه للتصنيع",
+      it2d: "توحيد الأجزاء للإنتاج الكمي وبناء الصيانة منذ اليوم الأول",
+      it3t: "3) نمو قائم على العقود",
+      it3d: "تجربة → تحقق → عقود توريد طويلة",
+      sec2: "التواصل",
+      contactDesc: "اضغط الأزرار لنسخ نص الاستفسار. الصقه في رسالة LinkedIn.",
+      copyDM: "نسخ نص الدعوة",
+      copyBiz: "نسخ ملخص النشاط",
+      footer: "© PHK Robotics. All rights reserved. v1.0 · إطار نشاط روبوتات فقط",
+      toastCopied: "تم النسخ!",
+      toastJumpVision: "تم الانتقال إلى قسم الرؤية.",
+      toastJumpRoadmap: "عرض ملخص سريع لخارطة الطريق."
+    }
+  };
+
+  // ---------- state ----------
+  const els = {
+    brandSub: document.getElementById("brandSub"),
+    kickerText: document.getElementById("kickerText"),
+    heroTitle: document.getElementById("heroTitle"),
+    heroDesc: document.getElementById("heroDesc"),
+    btnContactTxt: document.getElementById("btnContactTxt"),
+    btnVisionTxt: document.getElementById("btnVisionTxt"),
+    btnRoadmapTxt: document.getElementById("btnRoadmapTxt"),
+    card1Title: document.getElementById("card1Title"),
+    card1Desc: document.getElementById("card1Desc"),
+    card2Title: document.getElementById("card2Title"),
+    card2Desc: document.getElementById("card2Desc"),
+    card3Title: document.getElementById("card3Title"),
+    card3Desc: document.getElementById("card3Desc"),
+    card4Title: document.getElementById("card4Title"),
+    card4Desc: document.getElementById("card4Desc"),
+    card5Title: document.getElementById("card5Title"),
+    card5Desc: document.getElementById("card5Desc"),
+    sec1Title: document.getElementById("sec1Title"),
+    it1t: document.getElementById("it1t"),
+    it1d: document.getElementById("it1d"),
+    it2t: document.getElementById("it2t"),
+    it2d: document.getElementById("it2d"),
+    it3t: document.getElementById("it3t"),
+    it3d: document.getElementById("it3d"),
+    sec2Title: document.getElementById("sec2Title"),
+    contactDesc: document.getElementById("contactDesc"),
+    btnCopyDMTxt: document.getElementById("btnCopyDMTxt"),
+    btnCopyBizTxt: document.getElementById("btnCopyBizTxt"),
+    footerText: document.getElementById("footerText"),
+    toast: document.getElementById("toast"),
+    langAuto: document.getElementById("langAuto"),
+    langKo: document.getElementById("langKo"),
+    langEn: document.getElementById("langEn"),
+    langAr: document.getElementById("langAr"),
+  };
+
+  function pickAutoLang(){
+    const nav = (navigator.language || "ko").toLowerCase();
+    if(nav.startsWith("ar")) return "ar";
+    if(nav.startsWith("en")) return "en";
+    return "ko";
+  }
+
+  let current = "ko";
+  let mode = "auto"; // auto | manual
+
+  function setActivePill(){
+    [els.langAuto, els.langKo, els.langEn, els.langAr].forEach(b=>b.classList.remove("active"));
+    if(mode==="auto") els.langAuto.classList.add("active");
+    if(mode==="manual"){
+      if(current==="ko") els.langKo.classList.add("active");
+      if(current==="en") els.langEn.classList.add("active");
+      if(current==="ar") els.langAr.classList.add("active");
+    }
+  }
+
+  function applyLang(lang){
+    const t = TEXT[lang] || TEXT.ko;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = t.dir;
+
+    els.brandSub.textContent = t.brandSub;
+    els.kickerText.textContent = t.kicker;
+    els.heroTitle.textContent = t.heroTitle;
+    els.heroDesc.textContent = t.heroDesc;
+
+    els.btnContactTxt.textContent = t.btnContact;
+    els.btnVisionTxt.textContent = t.btnVision;
+    els.btnRoadmapTxt.textContent = t.btnRoadmap;
+
+    els.card1Title.textContent = t.c1t;
+    els.card1Desc.textContent = t.c1d;
+    els.card2Title.textContent = t.c2t;
+    els.card2Desc.textContent = t.c2d;
+    els.card3Title.textContent = t.c3t;
+    els.card3Desc.textContent = t.c3d;
+    els.card4Title.textContent = t.c4t;
+    els.card4Desc.textContent = t.c4d;
+    els.card5Title.textContent = t.c5t;
+    els.card5Desc.textContent = t.c5d;
+
+    els.sec1Title.textContent = t.sec1;
+    els.it1t.textContent = t.it1t;
+    els.it1d.textContent = t.it1d;
+    els.it2t.textContent = t.it2t;
+    els.it2d.textContent = t.it2d;
+    els.it3t.textContent = t.it3t;
+    els.it3d.textContent = t.it3d;
+
+    els.sec2Title.textContent = t.sec2;
+    els.contactDesc.textContent = t.contactDesc;
+    els.btnCopyDMTxt.textContent = t.copyDM;
+    els.btnCopyBizTxt.textContent = t.copyBiz;
+    els.footerText.textContent = t.footer;
+
+    setActivePill();
+  }
+
+  function toast(msg){
+    els.toast.textContent = msg;
+    els.toast.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=>els.toast.classList.remove("show"), 1400);
+  }
+
+  async function copy(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      toast(TEXT[current].toastCopied);
+    }catch(e){
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toast(TEXT[current].toastCopied);
+    }
+  }
+
+  // ---------- actions ----------
+  document.getElementById("btnContact").addEventListener("click", ()=>{
+    // Copy quick contact template
+    const dm = current==="ko"
+      ? `[PHK Robotics] 로보틱스 핵심 리더 초빙/협업 문의드립니다.\n\n- 분야: (로보틱스 총괄 / AI·자율주행 / 기구·전장·제어)\n- 경력/프로젝트: (간단 요약)\n- 가능 일정: (예: 이번 주 20분 통화)\n\n비공개로 조용히 논의하고 싶습니다.`
+      : current==="ar"
+        ? `[PHK Robotics] أود مناقشة دعوة/تعاون بشكل سري.\n\n- المجال: (قيادة الروبوتات / الذكاء الاصطناعي والاستقلالية / الميكانيك-الكهرباء-التحكم)\n- الخبرة: (ملخص)\n- الوقت المتاح: (مكالمة 20 دقيقة)\n\nلنناقش الأمر بهدوء وبشكل خاص.`
+        : `[PHK Robotics] Invitation / collaboration inquiry.\n\n- Domain: (Robotics lead / AI & autonomy / Mech-EE-Control)\n- Experience: (short)\n- Availability: (20-min call)\n\nI’d like a discreet conversation.`;
+    copy(dm);
+  });
+
+  document.getElementById("btnVision").addEventListener("click", ()=>{
+    // simply scroll a bit (hero already)
+    window.scrollTo({top: 0, behavior:"smooth"});
+    toast(TEXT[current].toastJumpVision);
+  });
+
+  document.getElementById("btnRoadmap").addEventListener("click", ()=>{
+    // show a quick roadmap summary in toast + copy
+    const roadmap = current==="ko"
+      ? "로드맵(요약): ① AMR 이동 플랫폼 → ② 팔/그리퍼 → ③ 작업 모듈(물류/현장) → ④ 파일럿 계약 → ⑤ 라인 구축/양산 확장"
+      : current==="ar"
+        ? "ملخص خارطة الطريق: 1) منصة AMR متحركة 2) ذراع/قابض 3) وحدات مهام 4) عقد تجريبي 5) خطوط إنتاج وتوسع"
+        : "Roadmap (short): 1) AMR base 2) arm/gripper 3) task modules 4) pilot contract 5) production lines & scale-up";
+    copy(roadmap);
+    toast(TEXT[current].toastJumpRoadmap);
+  });
+
+  document.getElementById("btnCopyDM").addEventListener("click", ()=>{
+    const text = current==="ko"
+      ? "우리는 로봇을 ‘시제품’이 아니라 산업의 인프라로 만드는 팀입니다. PHK Robotics에서 로보틱스 총괄 리더 1명을 초빙합니다. 비공개로 조용히 대화부터 시작하실 분만 DM 부탁드립니다."
+      : current==="ar"
+        ? "نحن نبني الروبوتات كبنية تحتية صناعية. ندعو قائدًا واحدًا للروبوتات. نقاش سري وهادئ عبر الرسائل."
+        : "We build robots as industrial infrastructure. We invite ONE robotics core leader. Discreet conversation via DM only.";
+    copy(text);
+  });
+
+  document.getElementById("btnCopyBiz").addEventListener("click", ()=>{
+    const text = current==="ko"
+      ? "PHK Robotics는 산업·물류·의료·방산·특수·휴머노이드 로봇을 설계·제조·확장하는 로보틱스 전문 사업체입니다. 사업자 등록 목적: 핵심 인력 확보 → 시제품/파일럿 → 국가·대기업 계약 → 제조 확장."
+      : current==="ar"
+        ? "PHK Robotics جهة متخصصة بتصميم وتصنيع وتوسيع حلول الروبوتات عبر عدة مجالات. هدف التسجيل: استقطاب القادة → نموذج/تجربة → عقود حكومية وشركات → توسع التصنيع."
+        : "PHK Robotics designs, manufactures, and scales robotics across multiple domains. Registration purpose: secure leaders → prototype/pilot → contracts → manufacturing scale-up.";
+    copy(text);
+  });
+
+  // language buttons
+  els.langAuto.addEventListener("click", ()=>{
+    mode = "auto";
+    current = pickAutoLang();
+    applyLang(current);
+  });
+  els.langKo.addEventListener("click", ()=>{ mode="manual"; current="ko"; applyLang(current); });
+  els.langEn.addEventListener("click", ()=>{ mode="manual"; current="en"; applyLang(current); });
+  els.langAr.addEventListener("click", ()=>{ mode="manual"; current="ar"; applyLang(current); });
+
+  // init
+  current = pickAutoLang();
+  applyLang(current);
+  mode = "auto";
+  setActivePill();
+</script>
+</body>
+</html>
