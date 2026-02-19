@@ -1,572 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="HK Robotics — Physical AI Robotics Company (Industrial, Logistics, Medical, Defense, Humanoid)." />
-  <title>HK Robotics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HK Robotics | Physical AI</title>
+    <style>
+        :root { --primary-color: #0055ff; --bg-dark: #0a0a0a; }
+        body { margin: 0; background: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+        header { padding: 40px; text-align: center; }
+        .lang-selector { position: absolute; top: 20px; right: 20px; }
+        .lang-btn { background: transparent; color: #888; border: 1px solid #444; padding: 5px 12px; cursor: pointer; margin-left: 5px; border-radius: 4px; transition: 0.3s; }
+        .lang-btn:hover, .lang-btn.active { color: white; border-color: var(--primary-color); }
+        
+        .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #brandTitle { font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; }
+        #brandTag { font-size: 1.5rem; color: #bbb; margin-bottom: 30px; }
+        
+        /* 사진 속 'pill' 스타일 */
+        #pillStatus { 
+            display: inline-block; padding: 8px 20px; border-radius: 50px; 
+            background: rgba(0, 85, 255, 0.15); border: 1px solid var(--primary-color);
+            font-size: 0.9rem; color: #00d4ff; font-weight: bold;
+        }
 
-  <style>
-    :root{
-      --bg:#0b0f17;
-      --card:#111827;
-      --card2:#0f172a;
-      --text:#e5e7eb;
-      --muted:#9ca3af;
-      --line:#263043;
-      --accent:#60a5fa;
-      --accent2:#34d399;
-      --warn:#fbbf24;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple SD Gothic Neo","Noto Sans KR", sans-serif;
-      background: radial-gradient(1200px 800px at 20% 0%, #0f1b3a 0%, var(--bg) 55%),
-                  radial-gradient(900px 600px at 80% 10%, #12302a 0%, var(--bg) 60%);
-      color:var(--text);
-      line-height:1.55;
-    }
-    a{color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 16px;border:1px solid var(--line);border-radius:16px;
-      background: rgba(17,24,39,.72); backdrop-filter: blur(10px);
-      position:sticky;top:12px;z-index:20;
-    }
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:40px;height:40px;border-radius:12px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      box-shadow: 0 10px 30px rgba(96,165,250,.25);
-    }
-    .brand h1{margin:0;font-size:16px;letter-spacing:.2px}
-    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
-    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .lang{
-      display:flex;gap:6px;align-items:center;
-      padding:6px;border:1px solid var(--line);border-radius:14px;
-      background: rgba(15,23,42,.55);
-    }
-    .lang button{
-      border:1px solid transparent;
-      background:transparent;
-      color:var(--text);
-      padding:8px 10px;border-radius:12px;
-      font-size:12px;cursor:pointer;
-      transition: .15s ease;
-      opacity:.85;
-      white-space:nowrap;
-    }
-    .lang button:hover{border-color:var(--line);opacity:1}
-    .lang button.active{
-      background: rgba(96,165,250,.16);
-      border-color: rgba(96,165,250,.35);
-      opacity:1;
-    }
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(15,23,42,.55);
-      color:var(--muted);font-size:12px;
-    }
-    .hero{
-      display:grid;grid-template-columns: 1.1fr .9fr;gap:18px;
-      margin-top:18px;
-    }
-    @media (max-width:920px){ .hero{grid-template-columns:1fr} .topbar{position:static} }
-    .card{
-      border:1px solid var(--line);
-      border-radius:18px;
-      background: rgba(17,24,39,.70);
-      backdrop-filter: blur(10px);
-      padding:18px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-    }
-    .headline{margin:0 0 8px;font-size:28px;letter-spacing:-.2px}
-    .sub{margin:0 0 14px;color:var(--muted)}
-    .grid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px;
-    }
-    @media (max-width:700px){ .grid{grid-template-columns:1fr} }
-    .mini{
-      padding:14px;border-radius:16px;border:1px solid var(--line);
-      background: rgba(15,23,42,.55);
-    }
-    .mini h3{margin:0 0 6px;font-size:14px}
-    .mini p{margin:0;color:var(--muted);font-size:13px}
-    .sectionTitle{
-      margin:0 0 10px;font-size:14px;color:#cbd5e1;letter-spacing:.3px;
-      display:flex;align-items:center;gap:10px;
-    }
-    .sectionTitle:before{
-      content:"";display:block;width:10px;height:10px;border-radius:3px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    }
-    .list{margin:0;padding-left:18px;color:var(--muted)}
-    .list li{margin:6px 0}
-    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:10px 12px;border-radius:14px;
-      border:1px solid var(--line);
-      background: rgba(96,165,250,.14);
-      cursor:pointer;text-decoration:none;
-      font-size:13px;
-      transition:.15s ease;
-    }
-    .btn:hover{transform: translateY(-1px); border-color: rgba(96,165,250,.45)}
-    .btn.secondary{
-      background:odol; /* fallback ignored */
-      background: rgba(52,211,153,.10);
-      border-color: rgba(52,211,153,.28);
-    }
-    .btn.ghost{
-      background: rgba(15,23,42,.45);
-    }
-    .note{
-      margin-top:12px;padding:12px;border-radius:14px;
-      border:1px dashed rgba(251,191,36,.45);
-      background: rgba(251,191,36,.06);
-      color:#fde68a;font-size:12px;
-    }
-    footer{
-      margin:18px 0 0;
-      padding:16px 14px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background: rgba(15,23,42,.55);
-      color:var(--muted);
-      font-size:12px;
-      display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;
-    }
-    .kvs{display:flex;gap:10px;flex-wrap:wrap}
-    .kv{padding:8px 10px;border-radius:12px;border:1px solid var(--line);background: rgba(17,24,39,.55)}
-    .kv b{color:var(--text)}
-    .hide{display:none !important}
-    [dir="rtl"] .brand{flex-direction:row-reverse}
-    [dir="rtl"] .actions{justify-content:flex-start}
-    [dir="rtl"] .sectionTitle{flex-direction:row-reverse}
-    [dir="rtl"] .sectionTitle:before{margin-left:0;margin-right:0}
-  </style>
+        .rtl { direction: rtl; font-family: 'Tahoma', sans-serif; }
+        footer { padding: 50px; border-top: 1px solid #222; font-size: 0.8rem; color: #666; text-align: center; }
+        a { color: var(--primary-color); text-decoration: none; }
+    </style>
 </head>
-
 <body>
-  <div class="wrap">
 
-    <!-- Top Bar -->
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1 id="brandTitle">HK Robotics</h1>
-          <p id="brandTag">Physical AI • Robotics for Industry & Society</p>
-        </div>
-      </div>
+<div class="lang-selector">
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('ko')">KO</button>
+    <button class="lang-btn" onclick="setLang('zh')">ZH</button>
+    <button class="lang-btn" onclick="setLang('ar')">AR</button>
+</div>
 
-      <div class="actions">
-        <div class="lang" aria-label="Language switch">
-          <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
-          <button id="btn-ko" onclick="setLang('ko')">KO</button>
-          <button id="btn-ar" onclick="setLang('ar')">AR</button>
-          <button id="btn-zh" onclick="setLang('zh')">中文</button>
-        </div>
+<section class="hero">
+    <h1 id="brandTitle">HK Robotics</h1>
+    <p id="brandTag">Physical AI • Robotics for Industry & Society</p>
+    <div id="pillStatus">Status: Building • Recruiting • Partnering</div>
+</section>
 
-        <span class="pill" id="pillStatus">Status: Building • Recruiting • Partnering</span>
-      </div>
-    </header>
+<footer>
+    <p>© <span id="year"></span> HK Group. All rights reserved.</p>
+    <p>Inquiries: <a href="mailto:info@hkrobotics.com">info@hkrobotics.com</a></p>
+</footer>
 
-    <!-- Content (EN) -->
-    <main id="content-en" data-lang="en" class="hero">
-      <section class="card">
-        <h2 class="headline">Build the Physical AI era.</h2>
-        <p class="sub">
-          HK Robotics develops practical robots that create real value in factories, logistics, healthcare,
-          safety and future humanoid applications — with a clear roadmap and scalable production vision.
-        </p>
+<script>
+    const brandTitle = document.getElementById("brandTitle");
+    const brandTag = document.getElementById("brandTag");
+    const pill = document.getElementById("pillStatus");
 
-        <div class="kvs">
-          <div class="kv"><b>Focus</b> Industrial • Logistics • Medical • Defense • Special</div>
-          <div class="kv"><b>Goal</b> Mass-production readiness & ecosystem</div>
-          <div class="kv"><b>Model</b> Hardware + Software + Services</div>
-        </div>
+    function setLang(lang) {
+        // 모든 버튼 비활성화 후 선택된 것만 활성화
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        
+        if (lang === "ko") {
+            brandTitle.textContent = "HK Robotics";
+            brandTag.textContent = "피지컬 AI • 산업을 바꾸는 로봇";
+            pill.textContent = "상태: 구축 • 채용 • 파트너십";
+            document.body.classList.remove("rtl");
+        } else if (lang === "ar") {
+            brandTitle.textContent = "HK Robotics";
+            brandTag.textContent = "Physical AI • روبوتات للصناعة والمجتمع";
+            pill.textContent = "الحالة: بناء • توظيف • شراكة";
+            document.body.classList.add("rtl");
+        } else if (lang === "zh") {
+            brandTitle.textContent = "HK Robotics";
+            brandTag.textContent = "Physical AI • 面向产业与社会的机器人";
+            pill.textContent = "状态: 建设中 • 招募中 • 合作中";
+            document.body.classList.remove("rtl");
+        } else {
+            // 기본 영어 (Default)
+            brandTitle.textContent = "HK Robotics";
+            brandTag.textContent = "Physical AI • Robotics for Industry & Society";
+            pill.textContent = "Status: Building • Recruiting • Partnering";
+            document.body.classList.remove("rtl");
+        }
 
-        <div class="ctaRow">
-          <a class="btn" href="#contact">Contact (Email)</a>
-          <a class="btn secondary" href="#roadmap">Roadmap</a>
-          <a class="btn ghost" href="#portfolio">Robot Portfolio</a>
-        </div>
-
-        <div class="note">
-          No YouTube/TikTok buttons here. This page is for clean investor/partner communication.
-        </div>
-      </section>
-
-      <aside class="card">
-        <h3 class="sectionTitle" id="portfolio">Robot Portfolio</h3>
-        <div class="grid">
-          <div class="mini">
-            <h3>Industrial Robots</h3>
-            <p>Welding, assembly, inspection, high-precision production automation.</p>
-          </div>
-          <div class="mini">
-            <h3>Logistics Robots (AMR/AGV)</h3>
-            <p>Warehouse movement, picking support, factory-to-factory transport.</p>
-          </div>
-          <div class="mini">
-            <h3>Medical & Care Robots</h3>
-            <p>Hospital logistics, assistive care, rehabilitation support.</p>
-          </div>
-          <div class="mini">
-            <h3>Defense & Safety</h3>
-            <p>Recon, hazardous work, disaster response, remote operation.</p>
-          </div>
-          <div class="mini">
-            <h3>Special-purpose Robots</h3>
-            <p>Extreme environments, heavy industry, infrastructure maintenance.</p>
-          </div>
-          <div class="mini">
-            <h3>Humanoid (R&D)</h3>
-            <p>Step-by-step development with safety-first and manufacturability.</p>
-          </div>
-        </div>
-      </aside>
-
-      <section class="card" id="roadmap" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">Roadmap</h3>
-        <ul class="list">
-          <li><b>Phase 1:</b> Start with practical platforms (industrial + AMR). Prototype → pilot sites.</li>
-          <li><b>Phase 2:</b> Modular components (sensors, actuators, control) → cost down & reliability up.</li>
-          <li><b>Phase 3:</b> Mass-production lines + partner network (parts, manufacturing, distribution).</li>
-          <li><b>Phase 4:</b> Expand to medical/safety and humanoid R&D with proven foundations.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="contact" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">Contact</h3>
-        <p class="sub" style="margin-bottom:8px">
-          Partnership, investment, recruitment, and technical collaboration inquiries:
-        </p>
-        <p style="margin:0;font-size:14px">
-          Email:
-          <a href="mailto:info@hkrobotics.com" style="color:var(--accent);text-decoration:none">
-            info@hkrobotics.com
-          </a>
-        </p>
-      </section>
-    </main>
-
-    <!-- Content (KO) -->
-    <main id="content-ko" data-lang="ko" class="hero hide">
-      <section class="card">
-        <h2 class="headline">피지컬 AI 시대를 만듭니다.</h2>
-        <p class="sub">
-          HK Robotics는 공장·물류·의료·안전·미래 휴머노이드까지
-          “실사용 가능한 로봇”을 단계적으로 개발하고, 확장 가능한 생산 로드맵을 구축합니다.
-        </p>
-
-        <div class="kvs">
-          <div class="kv"><b>핵심 분야</b> 산업 • 물류 • 의료 • 방산 • 특수</div>
-          <div class="kv"><b>목표</b> 양산 준비 & 생태계 구축</div>
-          <div class="kv"><b>모델</b> 하드웨어 + 소프트웨어 + 서비스</div>
-        </div>
-
-        <div class="ctaRow">
-          <a class="btn" href="#contact-ko">문의(메일)</a>
-          <a class="btn secondary" href="#roadmap-ko">로드맵</a>
-          <a class="btn ghost" href="#portfolio-ko">로봇 포트폴리오</a>
-        </div>
-
-        <div class="note">
-          유튜브/틱톡 버튼은 넣지 않았습니다. 투자자·파트너용으로 깔끔하게 구성했습니다.
-        </div>
-      </section>
-
-      <aside class="card">
-        <h3 class="sectionTitle" id="portfolio-ko">로봇 포트폴리오</h3>
-        <div class="grid">
-          <div class="mini">
-            <h3>산업용 로봇</h3>
-            <p>용접, 조립, 검사, 정밀 생산 자동화.</p>
-          </div>
-          <div class="mini">
-            <h3>물류 로봇(AMR/AGV)</h3>
-            <p>창고 이동, 피킹 보조, 공장 간 운송.</p>
-          </div>
-          <div class="mini">
-            <h3>의료·케어 로봇</h3>
-            <p>병원 물류, 간병 보조, 재활 지원.</p>
-          </div>
-          <div class="mini">
-            <h3>방산·안전</h3>
-            <p>정찰, 위험작업, 재난 대응, 원격 운용.</p>
-          </div>
-          <div class="mini">
-            <h3>특수 로봇</h3>
-            <p>극한 환경, 중공업, 인프라 유지보수.</p>
-          </div>
-          <div class="mini">
-            <h3>휴머노이드(R&D)</h3>
-            <p>안전·양산성을 최우선으로 단계적 개발.</p>
-          </div>
-        </div>
-      </aside>
-
-      <section class="card" id="roadmap-ko" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">로드맵</h3>
-        <ul class="list">
-          <li><b>1단계:</b> 산업/물류 플랫폼부터 실증(프로토타입 → 파일럿 현장).</li>
-          <li><b>2단계:</b> 모듈형 부품화(센서/구동/제어)로 원가 절감·신뢰성 향상.</li>
-          <li><b>3단계:</b> 양산 라인 + 파트너 네트워크(부품/제조/유통) 구축.</li>
-          <li><b>4단계:</b> 기반이 검증되면 의료/안전 확장 + 휴머노이드 R&D 고도화.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="contact-ko" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">문의</h3>
-        <p class="sub" style="margin-bottom:8px">
-          파트너십, 투자, 채용, 기술 협력 문의:
-        </p>
-        <p style="margin:0;font-size:14px">
-          이메일:
-          <a href="mailto:info@hkrobotics.com" style="color:var(--accent);text-decoration:none">
-            info@hkrobotics.com
-          </a>
-        </p>
-      </section>
-    </main>
-
-    <!-- Content (AR) -->
-    <main id="content-ar" data-lang="ar" class="hero hide" dir="rtl">
-      <section class="card">
-        <h2 class="headline">نبني عصر الذكاء الفيزيائي.</h2>
-        <p class="sub">
-          HK Robotics تطوّر روبوتات عملية تُحدث قيمة حقيقية في المصانع واللوجستيات والرعاية الصحية
-          والسلامة، مع خارطة طريق واضحة ورؤية قابلة للتوسع للإنتاج الكمي.
-        </p>
-
-        <div class="kvs">
-          <div class="kv"><b>التركيز</b> صناعي • لوجستي • طبي • دفاعي • خاص</div>
-          <div class="kv"><b>الهدف</b> جاهزية للإنتاج الكمي وبناء منظومة</div>
-          <div class="kv"><b>النموذج</b> عتاد + برمجيات + خدمات</div>
-        </div>
-
-        <div class="ctaRow">
-          <a class="btn" href="#contact-ar">تواصل (بريد)</a>
-          <a class="btn secondary" href="#roadmap-ar">خارطة الطريق</a>
-          <a class="btn ghost" href="#portfolio-ar">محفظة الروبوتات</a>
-        </div>
-
-        <div class="note">
-          لا توجد أزرار يوتيوب/تيك توك هنا. صفحة نظيفة للمستثمرين والشركاء.
-        </div>
-      </section>
-
-      <aside class="card">
-        <h3 class="sectionTitle" id="portfolio-ar">محفظة الروبوتات</h3>
-        <div class="grid">
-          <div class="mini">
-            <h3>روبوتات صناعية</h3>
-            <p>لحام، تجميع، فحص، أتمتة إنتاج عالية الدقة.</p>
-          </div>
-          <div class="mini">
-            <h3>روبوتات لوجستية (AMR/AGV)</h3>
-            <p>نقل المستودعات، دعم الالتقاط، النقل بين المصانع.</p>
-          </div>
-          <div class="mini">
-            <h3>روبوتات طبية ورعاية</h3>
-            <p>لوجستيات المستشفيات، المساعدة، دعم إعادة التأهيل.</p>
-          </div>
-          <div class="mini">
-            <h3>الدفاع والسلامة</h3>
-            <p>استطلاع، أعمال خطرة، استجابة للكوارث، تشغيل عن بُعد.</p>
-          </div>
-          <div class="mini">
-            <h3>روبوتات خاصة</h3>
-            <p>بيئات قاسية، صناعات ثقيلة، صيانة البنية التحتية.</p>
-          </div>
-          <div class="mini">
-            <h3>هيومانويد (بحث وتطوير)</h3>
-            <p>تطوير تدريجي مع أولوية للسلامة وقابلية التصنيع.</p>
-          </div>
-        </div>
-      </aside>
-
-      <section class="card" id="roadmap-ar" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">خارطة الطريق</h3>
-        <ul class="list">
-          <li><b>المرحلة 1:</b> منصات عملية (صناعي + AMR) من النموذج إلى التجارب الميدانية.</li>
-          <li><b>المرحلة 2:</b> مكوّنات معيارية (حساسات، مشغلات، تحكم) لخفض التكلفة ورفع الاعتمادية.</li>
-          <li><b>المرحلة 3:</b> خطوط إنتاج وشبكة شركاء (قطع، تصنيع، توزيع).</li>
-          <li><b>المرحلة 4:</b> توسّع طبي/سلامة وتطوير هيومانويد على أسس مثبتة.</li>
-        </ul>
-      </section>
-
-      <section class="card" id="contact-ar" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">التواصل</h3>
-        <p class="sub" style="margin-bottom:8px">
-          للاستثمار والشراكات والتوظيف والتعاون التقني:
-        </p>
-        <p style="margin:0;font-size:14px">
-          البريد الإلكتروني:
-          <a href="mailto:info@hkrobotics.com" style="color:var(--accent);text-decoration:none">
-            info@hkrobotics.com
-          </a>
-        </p>
-      </section>
-    </main>
-
-    <!-- Content (ZH) -->
-    <main id="content-zh" data-lang="zh" class="hero hide">
-      <section class="card">
-        <h2 class="headline">打造 Physical AI 时代。</h2>
-        <p class="sub">
-          HK Robotics 专注于可落地的机器人产品，面向工厂、物流、医疗、安全与未来人形机器人应用，
-          以清晰路线图推动规模化与量产准备。
-        </p>
-
-        <div class="kvs">
-          <div class="kv"><b>方向</b> 工业 • 物流 • 医疗 • 防务 • 特种</div>
-          <div class="kv"><b>目标</b> 量产准备与生态构建</div>
-          <div class="kv"><b>模式</b> 硬件 + 软件 + 服务</div>
-        </div>
-
-        <div class="ctaRow">
-          <a class="btn" href="#contact-zh">联系（邮箱）</a>
-          <a class="btn secondary" href="#roadmap-zh">路线图</a>
-          <a class="btn ghost" href="#portfolio-zh">产品矩阵</a>
-        </div>
-
-        <div class="note">
-          此页面不放 YouTube/TikTok 按钮，用于投资人/合作伙伴的清爽沟通。
-        </div>
-      </section>
-
-      <aside class="card">
-        <h3 class="sectionTitle" id="portfolio-zh">机器人产品矩阵</h3>
-        <div class="grid">
-          <div class="mini">
-            <h3>工业机器人</h3>
-            <p>焊接、装配、检测、高精度自动化生产。</p>
-          </div>
-          <div class="mini">
-            <h3>物流机器人（AMR/AGV）</h3>
-            <p>仓储搬运、拣选辅助、工厂间运输。</p>
-          </div>
-          <div class="mini">
-            <h3>医疗/护理机器人</h3>
-            <p>医院物流、辅助护理、康复支持。</p>
-          </div>
-          <div class="mini">
-            <h3>防务/安全</h3>
-            <p>侦察、危险作业、灾害响应、远程操控。</p>
-          </div>
-          <div class="mini">
-            <h3>特种机器人</h3>
-            <p>极端环境、重工业、基础设施维护。</p>
-          </div>
-          <div class="mini">
-            <h3>人形机器人（研发）</h3>
-            <p>强调安全与可制造性，循序渐进。</p>
-          </div>
-        </div>
-      </aside>
-
-      <section class="card" id="roadmap-zh" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">路线图</h3>
-        <ul class="list">
-          <li><b>阶段1：</b> 从工业与AMR平台起步，原型→试点落地。</li>
-          <li><b>阶段2：</b> 模块化部件（传感/驱动/控制）降低成本，提高可靠性。</li>
-          <li><b>阶段3：</b> 建立量产线与合作网络（零部件/制造/分发）。</li>
-          <li><b>阶段4：</b> 拓展医疗/安全，并在坚实基础上推进人形研发。</li>
-        </ul>
-      </section>
-
-      <section class="card" id="contact-zh" style="grid-column: 1 / -1;">
-        <h3 class="sectionTitle">联系</h3>
-        <p class="sub" style="margin-bottom:8px">
-          合作、投资、招聘、技术协作请联系：
-        </p>
-        <p style="margin:0;font-size:14px">
-          邮箱：
-          <a href="mailto:info@hkrobotics.com" style="color:var(--accent);text-decoration:none">
-            info@hkrobotics.com
-          </a>
-        </p>
-      </section>
-    </main>
-
-    <footer>
-      <div>© <span id="year"></span> HK Robotics. All rights reserved.</div>
-      <div class="kvs">
-        <div class="kv"><b>Email</b> <a href="mailto:info@hkrobotics.com" style="color:var(--accent);text-decoration:none">info@phkrobotics.com</a></div>
-        <div class="kv"><b>Language</b> EN / KO / AR / 中文</div>
-      </div>
-    </footer>
-
-  </div>
-
-  <script>
-    // default language: EN
-    const LANGS = ["en","ko","ar","zh"];
-
-    function setLang(lang){
-      if(!LANGS.includes(lang)) lang = "en";
-
-      // toggle visible blocks
-      LANGS.forEach(l => {
-        const el = document.getElementById("content-" + l);
-        if(!el) return;
-        el.classList.toggle("hide", l !== lang);
-      });
-
-      // buttons state
-      LANGS.forEach(l => {
-        const b = document.getElementById("btn-" + l);
-        if(!b) return;
-        b.classList.toggle("active", l === lang);
-      });
-
-      // html lang + direction
-      document.documentElement.lang = (lang === "ko") ? "ko" : (lang === "ar" ? "ar" : (lang === "zh" ? "zh" : "en"));
-      document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
-
-      // top labels per lang
-      const brandTitle = document.getElementById("brandTitle");
-      const brandTag = document.getElementById("brandTag");
-      const pill = document.getElementById("pillStatus");
-
-      if(lang === "ko"){
-        brandTitle.textContent = "HK Robotics";
-        brandTag.textContent = "피지컬 AI • 산업을 바꾸는 로봇";
-        pill.textContent = "상태: 구축 • 채용 • 파트너십";
-      } else if(lang === "ar"){
-        brandTitle.textContent = "HK Robotics";
-        brandTag.textContent = "Physical AI • روبوتات للصناعة والمجتمع";
-        pill.textContent = "الحالة: بناء • توظيف • شراكات";
-      } else if(lang === "zh"){
-        brandTitle.textContent = "HK Robotics";
-        brandTag.textContent = "Physical AI • 面向产业与社会的机器人";
-        pill.textContent = "状态：建设中 • 招募中 • 合作中";
-      } else {
-        brandTitle.textContent = "HK Robotics";
-        brandTag.textContent = "Physical AI • Robotics for Industry & Society";
-        pill.textContent = "Status: Building • Recruiting • Partnering";
-      }
-
-      // keep preference
-      try{ localStorage.setItem("hk_robotics_lang", lang); } catch(e){}
+        // 형님이 사진에서 쓰신 localStorage 로직 그대로 적용
+        try {
+            localStorage.setItem("hk_robotics_lang", lang);
+        } catch(e) { console.error(e); }
     }
 
-    // init
+    // 초기화 로직 (Init)
     document.getElementById("year").textContent = new Date().getFullYear();
-    (function(){
-      let saved = "en";
-      try{ saved = localStorage.getItem("hk_robotics_lang") || "en"; } catch(e){}
-      setLang(saved);
+
+    (function() {
+        let saved = "en";
+        try {
+            saved = localStorage.getItem("hk_robotics_lang") || "en";
+        } catch(e) { console.error(e); }
+        setLang(saved);
     })();
-  </script>
+</script>
+
 </body>
 </html>
