@@ -1,6 +1,6 @@
-# PHK Robotics
+# HK Robotics
 
-PHK Robotics is a robotics-focused organization dedicated to building industrial-scale robotics systems.
+HK Robotics is a robotics-focused organization dedicated to building industrial-scale robotics systems.
 
 ## Scope
 - Industrial Robotics
